@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
-function App() {
+export default function App() {
+  const [items, setItems] = useState([]);
+
+  function onRemoveItem(itemToRemove) {
+    const newItems = items.filter((item) => item !== itemToRemove);
+    setItems(newItems);
+  }
+
+  function onSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const input = form.item;
+    const newItems = [...items, input.value];
+    setItems(newItems);
+    form.reset();
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h1>Project 1: Shopping List</h1>
+      <div className="container">
+        <h2>Items To Buy</h2>
+        <form onSubmit={onSubmit}>
+          <input type="text" name="item" required placeholder="Add a new Item" />
+          <button type="submit">Add</button>
+        </form>
+        <ol>
+          {items.map((item, index) => (
+            <Item key={index} onRemoveItem={onRemoveItem} item={item} />
+          ))}
+        </ol>
+      </div>
+    </>
   );
 }
 
-export default App;
+function Item({ item, onRemoveItem }) {
+  return (
+    <li>
+      {item}
+      <button className="delete" onClick={() => onRemoveItem(item)}>
+        X
+      </button>
+    </li>
+  );
+}
